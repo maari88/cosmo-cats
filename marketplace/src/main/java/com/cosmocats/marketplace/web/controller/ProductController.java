@@ -1,15 +1,17 @@
 package com.cosmocats.marketplace.web.controller;
 
-
 import com.cosmocats.marketplace.domain.Product;
 import com.cosmocats.marketplace.domain.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/api/v1/products")
 public class ProductController {
 
     private final ProductService productService;
@@ -18,51 +20,43 @@ public class ProductController {
         this.productService = productService;
     }
 
-    // -------------------
     // CREATE
-    // -------------------
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+    public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) {
         Product created = productService.createProduct(product);
-        return ResponseEntity.ok(created);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(created.getId()).toUri();
+        return ResponseEntity.created(location).body(created);
     }
 
-    // -------------------
-    // READ
-    // -------------------
+    // READ - list
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts() {
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
+    // READ - single
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProduct(@PathVariable Long id) {
-        return productService.getProductById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) {
+        Product product = productService.getProductById(id);
+        return ResponseEntity.ok(product);
     }
 
-    // -------------------
-    // UPDATE
-    // -------------------
+    // UPDATE - full replace
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
-        return productService.updateProduct(id, product)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Product> updateProductById(@PathVariable("id") Long id,
+                                                     @Valid @RequestBody Product product) {
+        Product updated = productService.updateProductById(id, product);
+        return ResponseEntity.ok(updated);
     }
 
-    // -------------------
-    // DELETE
-    // -------------------
+    // DELETE - idempotent (always 204)
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-        boolean deleted = productService.deleteProduct(id);
-        if (deleted) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Void> deleteProductById(@PathVariable("id") Long id) {
+        productService.deleteProductById(id);
+        return ResponseEntity.noContent().build();
     }
 }
+
+
 

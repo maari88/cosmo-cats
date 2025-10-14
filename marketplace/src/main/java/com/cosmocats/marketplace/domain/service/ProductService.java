@@ -1,6 +1,7 @@
 package com.cosmocats.marketplace.domain.service;
 
 import com.cosmocats.marketplace.domain.Product;
+import com.cosmocats.marketplace.domain.exception.ProductNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -34,34 +35,43 @@ public class ProductService {
         return new ArrayList<>(productStore.values());
     }
 
-    public Optional<Product> getProductById(Long id) {
-        return Optional.ofNullable(productStore.get(id));
+    // READ - single
+    public Product getProductById(Long productId) {
+        Product product = productStore.get(productId);
+        if (product == null) {
+            throw new ProductNotFoundException(productId);
+        }
+        return product;
     }
 
     // -------------------
     // UPDATE
     // -------------------
-    public Optional<Product> updateProduct(Long id, Product updatedProduct) {
-        Product existing = productStore.get(id);
+    public Product updateProductById(Long productId, Product updated) {
+        Product existing = productStore.get(productId);
         if (existing == null) {
-            return Optional.empty();
+            throw new ProductNotFoundException(productId);
         }
 
-        existing.setName(updatedProduct.getName());
-        existing.setDescription(updatedProduct.getDescription());
-        existing.setPrice(updatedProduct.getPrice());
-        existing.setCategory(updatedProduct.getCategory());
-        existing.setSku(updatedProduct.getSku());
+        existing.setName(updated.getName());
+        existing.setDescription(updated.getDescription());
+        existing.setPrice(updated.getPrice());
+        existing.setCategory(updated.getCategory());
+        existing.setSku(updated.getSku());
+        existing.setAntigravityCoefficient(updated.getAntigravityCoefficient());
+        existing.setOriginPlanet(updated.getOriginPlanet());
+        existing.setRadiationRating(updated.getRadiationRating());
+        existing.setStock(updated.getStock());
 
-        productStore.put(id, existing);
-        return Optional.of(existing);
+        productStore.put(productId, existing);
+        return existing;
     }
 
     // -------------------
     // DELETE
     // -------------------
-    public boolean deleteProduct(Long id) {
-        return productStore.remove(id) != null;
+    public void deleteProductById(Long productId) {
+        productStore.remove(productId);
     }
 
 }
