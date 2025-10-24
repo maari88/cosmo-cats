@@ -2,6 +2,8 @@ package com.cosmocats.marketplace.domain.service;
 
 import com.cosmocats.marketplace.domain.Product;
 import com.cosmocats.marketplace.domain.exception.ProductNotFoundException;
+import com.cosmocats.marketplace.web.dto.ProductCreateDTO;
+import com.cosmocats.marketplace.web.mapper.ProductMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -12,6 +14,11 @@ public class ProductService {
 
     private final Map<Long, Product> productStore = new HashMap<>();
     private final AtomicLong idGenerator = new AtomicLong(1);
+    private final ProductMapper productMapper;
+
+    public ProductService(ProductMapper productMapper) {
+        this.productMapper = productMapper;
+    }
 
     // -------------------
     // CREATE
@@ -47,22 +54,13 @@ public class ProductService {
     // -------------------
     // UPDATE
     // -------------------
-    public Product updateProductById(Long productId, Product updated) {
+    public Product updateProductById(Long productId, ProductCreateDTO dto) {
         Product existing = productStore.get(productId);
         if (existing == null) {
             throw new ProductNotFoundException(productId);
         }
-
-        existing.setName(updated.getName());
-        existing.setDescription(updated.getDescription());
-        existing.setPrice(updated.getPrice());
-        existing.setCategory(updated.getCategory());
-        existing.setSku(updated.getSku());
-        existing.setAntigravityCoefficient(updated.getAntigravityCoefficient());
-        existing.setOriginPlanet(updated.getOriginPlanet());
-        existing.setRadiationRating(updated.getRadiationRating());
-        existing.setStock(updated.getStock());
-
+        // використати MapStruct для копіювання не-null полів
+        productMapper.updateFromDto(dto, existing);
         productStore.put(productId, existing);
         return existing;
     }
