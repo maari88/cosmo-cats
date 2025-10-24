@@ -1,0 +1,475 @@
+openapi: 3.0.3
+info:
+  title: Cosmo Cats Intergalactic Marketplace - Product API
+  version: "1.0.0"
+  description: >
+    REST API for managing products in the Cosmo Cats Marketplace.
+    Products have cosmic attributes: antigravityCoefficient, originPlanet, radiationRating.
+  contact:
+    name: Cosmo Cats Dev Team
+    email: devs@cosmocats.example
+servers:
+  - url: http://localhost:8080
+    description: Local server (dev)
+tags:
+  - name: Products
+    description: CRUD operations for cosmic products
+
+paths:
+  /api/v1/products:
+    get:
+      tags: [Products]
+      summary: Return a list of products (supports pagination and filtering)
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/sort'
+        - name: q
+          in: query
+          description: Search string (searches name, description or originPlanet)
+          schema:
+            type: string
+        - name: minPrice
+          in: query
+          description: Minimum price (filter)
+          schema:
+            type: number
+            format: double
+            minimum: 0
+        - name: maxPrice
+          in: query
+          description: Maximum price (filter)
+          schema:
+            type: number
+            format: double
+            minimum: 0
+      responses:
+        '200':
+          description: List of products with pagination metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductPage'
+              examples:
+                example-1:
+                  summary: Small list
+                  value:
+                    content:
+                      - id: 1
+                        sku: "CC-AG-0001"
+                        name: "Anti-gravity Yarn Ball"
+                        description: "A yarn ball that lifts up to 0.8G"
+                        price: 99.99
+                        currency: "USD"
+                        originPlanet: "Lunara"
+                        antigravityCoefficient: 0.85
+                        radiationRating: 1
+                        stock: 42
+                      - id: 2
+                        sku: "CC-SL-0042"
+                        name: "Cosmic Milk (cup)"
+                        description: "Calcium-enriched milk for intergalactic cats"
+                        price: 12.5
+                        currency: "USD"
+                        originPlanet: "Ceres"
+                        antigravityCoefficient: 0.00
+                        radiationRating: 0
+                        stock: 120
+                    page: 0
+                    size: 10
+                    totalElements: 2
+                    totalPages: 1
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      tags: [Products]
+      summary: Create a new product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductCreate'
+            examples:
+              new-item:
+                value:
+                  sku: "CC-AG-9000"
+                  name: "Moonlight Flying Yarn"
+                  description: "The best yarn for anti-gravity play"
+                  price: 149.99
+                  currency: "USD"
+                  originPlanet: "Lunara"
+                  antigravityCoefficient: 0.9
+                  radiationRating: 1
+                  stock: 20
+      responses:
+        '201':
+          description: Created; returns the created resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '400':
+          description: Validation error on input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Conflict (for example, SKU already exists)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/products/{id}:
+    get:
+      tags: [Products]
+      summary: Get a product by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: Product information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      tags: [Products]
+      summary: Full update of a product (replace all fields)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductUpdate'
+      responses:
+        '200':
+          description: Returns the updated product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Conflict (for example, SKU change to an existing one)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    patch:
+      tags: [Products]
+      summary: Partial update of a product (JSON Merge Patch)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/merge-patch+json:
+            schema:
+              $ref: '#/components/schemas/ProductPartial'
+      responses:
+        '200':
+          description: Returns the updated product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '400':
+          description: Invalid data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags: [Products]
+      summary: Delete a product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Successfully deleted (No Content)
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  parameters:
+    page:
+      name: page
+      in: query
+      description: Page number (0-based)
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    size:
+      name: size
+      in: query
+      description: Page size
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    sort:
+      name: sort
+      in: query
+      description: Sort field and direction 
+      schema:
+        type: string
+
+  schemas:
+    ProductBase:
+      type: object
+      properties:
+        sku:
+          type: string
+          description: Unique product code
+          example: "CC-AG-0001"
+          minLength: 5
+          maxLength: 64
+          pattern: "^[A-Z0-9\\-]+$"
+        name:
+          type: string
+          minLength: 3
+          maxLength: 200
+          example: "Anti-gravity Yarn Ball"
+        description:
+          type: string
+          description: Detailed product description
+          maxLength: 2000
+          example: "A yarn ball that lifts up to 0.8G — perfect for cosmic cats"
+        price:
+          type: number
+          format: double
+          description: Price in the specified currency
+          minimum: 0.0
+          example: 99.99
+        currency:
+          type: string
+          description: ISO currency code
+          pattern: "^[A-Z]{3}$"
+          example: "USD"
+        originPlanet:
+          type: string
+          description: Planet or origin location
+          example: "Lunara"
+        antigravityCoefficient:
+          type: number
+          description: Antigravity coefficient (0.0 — no effect, 1.0 — full antigravity)
+          minimum: 0.0
+          maximum: 1.0
+          example: 0.85
+        radiationRating:
+          type: integer
+          description: Radiation safety rating (0 — safe, 0..5)
+          minimum: 0
+          maximum: 5
+          example: 1
+        stock:
+          type: integer
+          description: Number of units in stock
+          minimum: 0
+          example: 42
+        weightKg:
+          type: number
+          description: Weight in kilograms (optional)
+          minimum: 0
+          example: 0.12
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["anti-gravity","cat-favorite"]
+      required:
+        - sku
+        - name
+        - price
+        - currency
+        - stock
+
+    ProductCreate:
+      allOf:
+        - $ref: '#/components/schemas/ProductBase'
+      description: Schema for creating a product. All required fields must be present in the request.
+
+    ProductUpdate:
+      type: object
+      description: Full product update (all fields should be present)
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        <<: {}
+      allOf:
+        - $ref: '#/components/schemas/ProductBase'
+
+    ProductPartial:
+      type: object
+      description: Partial update — contains only fields to change
+      properties:
+        sku:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+          format: double
+        currency:
+          type: string
+        originPlanet:
+          type: string
+        antigravityCoefficient:
+          type: number
+        radiationRating:
+          type: integer
+        stock:
+          type: integer
+        weightKg:
+          type: number
+        tags:
+          type: array
+          items:
+            type: string
+
+    ProductResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-10-02T12:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-10-02T12:00:00Z"
+        sku:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        currency:
+          type: string
+        originPlanet:
+          type: string
+        antigravityCoefficient:
+          type: number
+        radiationRating:
+          type: integer
+        stock:
+          type: integer
+        weightKg:
+          type: number
+        tags:
+          type: array
+          items:
+            type: string
+      required:
+        - id
+        - sku
+        - name
+        - price
+
+    ProductPage:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductResponse'
+        page:
+          type: integer
+          example: 0
+        size:
+          type: integer
+          example: 10
+        totalElements:
+          type: integer
+          example: 2
+        totalPages:
+          type: integer
+          example: 1
+
+    ErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          example: "2025-10-02T12:00:00Z"
+        status:
+          type: integer
+          example: 400
+        error:
+          type: string
+          example: "Bad Request"
+        message:
+          type: string
+          example: "Validation failed: price must be >= 0"
+        path:
+          type: string
+          example: "/api/v1/products"
