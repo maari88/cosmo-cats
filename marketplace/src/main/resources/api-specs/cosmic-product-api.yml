@@ -2,64 +2,63 @@ openapi: 3.0.3
 info:
   title: Cosmo Cats Intergalactic Marketplace - Product API
   version: "1.0.0"
-  description: |
-    REST API для керування товарами (Products) в маркетплейсі Cosmo Cats.
-    Сучасна космічна тематика: продукти можуть мати антигравітаційний коефіцієнт,
-    походження з планети та рейтинг радіаційної безпеки.
+  description: >
+    REST API for managing products in the Cosmo Cats Marketplace.
+    Products have cosmic attributes: antigravityCoefficient, originPlanet, radiationRating.
   contact:
     name: Cosmo Cats Dev Team
     email: devs@cosmocats.example
 servers:
   - url: http://localhost:8080
-    description: Локальний сервер (dev)
+    description: Local server (dev)
 tags:
   - name: Products
-    description: CRUD операції над космічними товарами
+    description: CRUD operations for cosmic products
 
 paths:
   /api/v1/products:
     get:
       tags: [Products]
-      summary: Повернути перелік продуктів (з пагінацією і фільтрацією)
+      summary: Return a list of products (supports pagination and filtering)
       parameters:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/size'
         - $ref: '#/components/parameters/sort'
         - name: q
           in: query
-          description: Пошуковий рядок (по name, description або originPlanet)
+          description: Search string (searches name, description or originPlanet)
           schema:
             type: string
         - name: minPrice
           in: query
-          description: Мінімальна ціна (фільтр)
+          description: Minimum price (filter)
           schema:
             type: number
             format: double
             minimum: 0
         - name: maxPrice
           in: query
-          description: Максимальна ціна (фільтр)
+          description: Maximum price (filter)
           schema:
             type: number
             format: double
             minimum: 0
       responses:
         '200':
-          description: Список продуктів з метаданими пагінації
+          description: List of products with pagination metadata
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProductPage'
               examples:
                 example-1:
-                  summary: Невеликий перелік
+                  summary: Small list
                   value:
                     content:
                       - id: 1
                         sku: "CC-AG-0001"
-                        name: "Антигравітаційний клубок ниток"
-                        description: "Клубок, що піднімається на 0.8G"
+                        name: "Anti-gravity Yarn Ball"
+                        description: "A yarn ball that lifts up to 0.8G"
                         price: 99.99
                         currency: "USD"
                         originPlanet: "Lunara"
@@ -68,8 +67,8 @@ paths:
                         stock: 42
                       - id: 2
                         sku: "CC-SL-0042"
-                        name: "Космічне молоко (склянка)"
-                        description: "Збагачене кальцієм для міжгалактичних котів"
+                        name: "Cosmic Milk (cup)"
+                        description: "Calcium-enriched milk for intergalactic cats"
                         price: 12.5
                         currency: "USD"
                         originPlanet: "Ceres"
@@ -81,7 +80,7 @@ paths:
                     totalElements: 2
                     totalPages: 1
         '400':
-          description: Невірні параметри запиту
+          description: Invalid request parameters
           content:
             application/json:
               schema:
@@ -89,7 +88,7 @@ paths:
 
     post:
       tags: [Products]
-      summary: Створити новий продукт
+      summary: Create a new product
       requestBody:
         required: true
         content:
@@ -100,8 +99,8 @@ paths:
               new-item:
                 value:
                   sku: "CC-AG-9000"
-                  name: "Літаючий клубок від Місячної Фірми"
-                  description: "Найкращий клубок для антигравітаційних ігор"
+                  name: "Moonlight Flying Yarn"
+                  description: "The best yarn for anti-gravity play"
                   price: 149.99
                   currency: "USD"
                   originPlanet: "Lunara"
@@ -110,19 +109,19 @@ paths:
                   stock: 20
       responses:
         '201':
-          description: Створено; повертає створений ресурс
+          description: Created; returns the created resource
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProductResponse'
         '400':
-          description: Помилка валідації вхідних даних
+          description: Validation error on input data
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '409':
-          description: Конфлікт (наприклад, sku вже існує)
+          description: Conflict (for example, SKU already exists)
           content:
             application/json:
               schema:
@@ -131,7 +130,7 @@ paths:
   /api/v1/products/{id}:
     get:
       tags: [Products]
-      summary: Отримати продукт за ID
+      summary: Get a product by ID
       parameters:
         - name: id
           in: path
@@ -142,13 +141,13 @@ paths:
             minimum: 1
       responses:
         '200':
-          description: Інформація про продукт
+          description: Product information
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProductResponse'
         '404':
-          description: Продукт не знайдено
+          description: Product not found
           content:
             application/json:
               schema:
@@ -156,7 +155,7 @@ paths:
 
     put:
       tags: [Products]
-      summary: Повне оновлення продукту (замінити всі поля)
+      summary: Full update of a product (replace all fields)
       parameters:
         - name: id
           in: path
@@ -171,25 +170,25 @@ paths:
               $ref: '#/components/schemas/ProductUpdate'
       responses:
         '200':
-          description: Повертає оновлений продукт
+          description: Returns the updated product
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProductResponse'
         '400':
-          description: Помилка валідації
+          description: Validation error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: Продукт не знайдено
+          description: Product not found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '409':
-          description: Конфлікт (наприклад, sku міняється на існуючий)
+          description: Conflict (for example, SKU change to an existing one)
           content:
             application/json:
               schema:
@@ -197,7 +196,7 @@ paths:
 
     patch:
       tags: [Products]
-      summary: Часткове оновлення продукту (JSON Merge Patch)
+      summary: Partial update of a product (JSON Merge Patch)
       parameters:
         - name: id
           in: path
@@ -212,19 +211,19 @@ paths:
               $ref: '#/components/schemas/ProductPartial'
       responses:
         '200':
-          description: Повертає оновлений продукт
+          description: Returns the updated product
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProductResponse'
         '400':
-          description: Невірні дані
+          description: Invalid data
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: Продукт не знайдено
+          description: Product not found
           content:
             application/json:
               schema:
@@ -232,7 +231,7 @@ paths:
 
     delete:
       tags: [Products]
-      summary: Видалити продукт
+      summary: Delete a product
       parameters:
         - name: id
           in: path
@@ -241,9 +240,9 @@ paths:
             type: integer
       responses:
         '204':
-          description: Успішно видалено (No Content)
+          description: Successfully deleted (No Content)
         '404':
-          description: Продукт не знайдено
+          description: Product not found
           content:
             application/json:
               schema:
@@ -254,7 +253,7 @@ components:
     page:
       name: page
       in: query
-      description: Номер сторінки (0-based)
+      description: Page number (0-based)
       schema:
         type: integer
         minimum: 0
@@ -262,7 +261,7 @@ components:
     size:
       name: size
       in: query
-      description: Розмір сторінки
+      description: Page size
       schema:
         type: integer
         minimum: 1
@@ -271,7 +270,7 @@ components:
     sort:
       name: sort
       in: query
-      description: Поле сортування та напрям
+      description: Sort field and direction 
       schema:
         type: string
 
@@ -281,7 +280,7 @@ components:
       properties:
         sku:
           type: string
-          description: Унікальний код товару
+          description: Unique product code
           example: "CC-AG-0001"
           minLength: 5
           maxLength: 64
@@ -290,47 +289,47 @@ components:
           type: string
           minLength: 3
           maxLength: 200
-          example: "Антигравітаційний клубок"
+          example: "Anti-gravity Yarn Ball"
         description:
           type: string
-          description: Детальний опис товару
+          description: Detailed product description
           maxLength: 2000
-          example: "Клубок, що піднімається на 0.8G — ідеально підходить для космічних котів"
+          example: "A yarn ball that lifts up to 0.8G — perfect for cosmic cats"
         price:
           type: number
           format: double
-          description: Ціна у вказаній валюті
+          description: Price in the specified currency
           minimum: 0.0
           example: 99.99
         currency:
           type: string
-          description: ISO-код валюти
+          description: ISO currency code
           pattern: "^[A-Z]{3}$"
           example: "USD"
         originPlanet:
           type: string
-          description: Планета чи місце походження
+          description: Planet or origin location
           example: "Lunara"
         antigravityCoefficient:
           type: number
-          description: Коефіцієнт антигравітації (0.0 — немає ефекту, 1.0 — повна антигравітація)
+          description: Antigravity coefficient (0.0 — no effect, 1.0 — full antigravity)
           minimum: 0.0
           maximum: 1.0
           example: 0.85
         radiationRating:
           type: integer
-          description: Рейтинг радіаційної безпеки (0 — безпечний, 0..5)
+          description: Radiation safety rating (0 — safe, 0..5)
           minimum: 0
           maximum: 5
           example: 1
         stock:
           type: integer
-          description: Кількість одиниць на складі
+          description: Number of units in stock
           minimum: 0
           example: 42
         weightKg:
           type: number
-          description: Вага у кілограмax (опціонально)
+          description: Weight in kilograms (optional)
           minimum: 0
           example: 0.12
         tags:
@@ -348,11 +347,11 @@ components:
     ProductCreate:
       allOf:
         - $ref: '#/components/schemas/ProductBase'
-      description: Схема для створення продукту. Всі required поля мають бути в запиті.
+      description: Schema for creating a product. All required fields must be present in the request.
 
     ProductUpdate:
       type: object
-      description: Повне оновлення продукту (всі поля повинні бути присутні)
+      description: Full product update (all fields should be present)
       properties:
         id:
           type: integer
@@ -363,7 +362,7 @@ components:
 
     ProductPartial:
       type: object
-      description: Часткове оновлення — містить лише поля, які потрібно змінити
+      description: Partial update — contains only fields to change
       properties:
         sku:
           type: string
