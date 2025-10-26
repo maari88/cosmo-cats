@@ -270,7 +270,7 @@ components:
     sort:
       name: sort
       in: query
-      description: Sort field and direction 
+      description: Sort field and direction
       schema:
         type: string
 
