@@ -23,31 +23,31 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      # Cache Gradle dependencies
+      # Cache Gradle dependencies 
       - name: Cache Gradle dependencies
         uses: actions/cache@v3
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: gradle-${{ hashFiles('**/*.gradle*', '**/gradle.properties', '**/gradle-wrapper.properties') }}
+          key: gradle-${{ hashFiles('marketplace/**/*.gradle*', 'marketplace/**/gradle.properties', 'marketplace/**/gradle-wrapper.properties') }}
           restore-keys: |
             gradle-
 
       - name: Grant execute permission for Gradlew
-        run: chmod +x ./gradlew
+        run: chmod +x ./marketplace/gradlew
 
-      # Run Gradle build and tests with coverage
+      # Run Gradle build and tests with coverage from within marketplace
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v3
+        working-directory: marketplace
         with:
           cache-disabled: true
           generate-job-summary: false
 
-      # Upload the JaCoCo test coverage report
+      # Upload the JaCoCo test coverage report 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         with:
           name: test-coverage-report
-          path: build/reports/coverage/index.html
-
+          path: marketplace/build/reports/coverage/index.html
