@@ -51,6 +51,7 @@ class ProductControllerStandaloneTest {
 
         mockMvc = MockMvcBuilders
                 .standaloneSetup(productController)
+                // ВАЖЛИВО: Ми підключаємо GlobalExceptionHandler вручну
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .setValidator(validator)
                 .build();
@@ -145,6 +146,7 @@ class ProductControllerStandaloneTest {
     @Test
     void getProductById_WhenProductNotFound_ShouldReturn404ProblemDetail() throws Exception {
         // Arrange
+        // (Тестуємо GlobalExceptionHandler -> handleProductNotFound)
         when(productService.getProductById(999L)).thenThrow(new ProductNotFoundException(999L));
 
         // Act & Assert
@@ -203,5 +205,19 @@ class ProductControllerStandaloneTest {
         // Act & Assert
         mockMvc.perform(delete("/api/v1/products/1"))
                 .andExpect(status().isNoContent()); // 204
+    }
+
+    @Test
+    void getProductById_WhenUnexpectedError_ShouldReturn500ProblemDetail() throws Exception {
+        // Arrange
+        when(productService.getProductById(any(Long.class)))
+                .thenThrow(new RuntimeException("Unexpected database error"));
+
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/products/1"))
+                .andExpect(status().isInternalServerError()) // 500
+                .andExpect(content().contentType("application/problem+json"))
+                .andExpect(jsonPath("$.title", is("Internal Server Error")))
+                .andExpect(jsonPath("$.detail", is("An unexpected error occurred. Please contact support.")));
     }
 }
