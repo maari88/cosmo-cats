@@ -37,13 +37,11 @@ jobs:
       - name: Setup Gradle (tooling)
         uses: gradle/actions/setup-gradle@v3
 
-      # Run Gradle from marketplace folder (working-directory allowed for `run`)
       - name: Build with Gradle
         run: |
           ./gradlew build
         working-directory: marketplace
 
-      # Optional: list reports for debugging 
       - name: List build reports (debug)
         run: ls -la marketplace/build/reports || true
 
@@ -54,8 +52,8 @@ jobs:
           path: marketplace/build/reports/coverage/index.html
 
       - name: Upload test execution report (if failed)
-        if: failure() 
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-execution-report 
-          path: marketplace/build/reports/tests/test/ 
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-execution-report
+          path: marketplace/build/reports/tests/test/
