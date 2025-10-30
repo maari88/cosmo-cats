@@ -81,9 +81,6 @@ test {
     }
 }
 
-jacoco {
-    toolVersion = "0.8.10"
-}
 
 jacocoTestReport {
     dependsOn test
@@ -106,7 +103,7 @@ jacocoTestCoverageVerification {
             limit {
                 counter = 'INSTRUCTION'
                 value = 'COVERED_RATIO'
-                minimum = 0.80 // Ваша вимога 80%
+                minimum = 0.80
             }
         }
     }
