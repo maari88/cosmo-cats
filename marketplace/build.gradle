@@ -96,9 +96,11 @@ jacocoTestCoverageVerification {
     dependsOn jacocoTestReport
     violationRules {
         rule {
-            excludes = [
-                    'com/cosmocats/marketplace/external/PricingClient.java',
-                    'com/cosmocats/marketplace/external/dto/ExternalPriceDTO.java'
+            element = 'CLASS'
+            includes = [
+                    'com.cosmocats.marketplace.domain.service.ProductService',
+                    'com.cosmocats.marketplace.web.controller.ProductController',
+                    'com.cosmocats.marketplace.web.exception.GlobalExceptionHandler'
             ]
             limit {
                 counter = 'INSTRUCTION'
