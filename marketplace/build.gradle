@@ -21,6 +21,8 @@ ext {
     junitJupiterVersion = '5.10.0'
     mockitoVersion = '5.5.0'
     wiremockVersion = '3.0.0'
+
+    lombokMapstructBindingVersion = '0.2.0'
 }
 
 configurations {
@@ -47,6 +49,8 @@ dependencies {
     // Lombok (compileOnly + annotation processor)
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
 
     // H2 DB for dev/testing
     runtimeOnly 'com.h2database:h2'
