@@ -52,3 +52,10 @@ jobs:
         with:
           name: test-coverage-report
           path: marketplace/build/reports/coverage/index.html
+
+      - name: Upload test execution report (if failed)
+        if: failure() 
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-execution-report 
+          path: marketplace/build/reports/tests/test/ 
