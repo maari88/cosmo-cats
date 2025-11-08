@@ -51,7 +51,6 @@ class ProductControllerStandaloneTest {
 
         mockMvc = MockMvcBuilders
                 .standaloneSetup(productController)
-                // ВАЖЛИВО: Ми підключаємо GlobalExceptionHandler вручну
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .setValidator(validator)
                 .build();
@@ -146,7 +145,6 @@ class ProductControllerStandaloneTest {
     @Test
     void getProductById_WhenProductNotFound_ShouldReturn404ProblemDetail() throws Exception {
         // Arrange
-        // (Тестуємо GlobalExceptionHandler -> handleProductNotFound)
         when(productService.getProductById(999L)).thenThrow(new ProductNotFoundException(999L));
 
         // Act & Assert
@@ -186,7 +184,7 @@ class ProductControllerStandaloneTest {
     @Test
     void updateProductById_WhenNameIsBlank_ShouldReturn400BadRequest() throws Exception {
         // Arrange
-        validDto.setName(null); // Порушення валідації
+        validDto.setName(null);
 
         // Act & Assert
         mockMvc.perform(put("/api/v1/products/1")
@@ -200,7 +198,7 @@ class ProductControllerStandaloneTest {
 
     @Test
     void deleteProductById_ShouldReturn204NoContent() throws Exception {
-        // Arrange (нічого не мокаємо, сервіс повертає void)
+        // Arrange
 
         // Act & Assert
         mockMvc.perform(delete("/api/v1/products/1"))
