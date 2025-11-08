@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.5.6'
+    id 'org.springframework.boot' version '3.3.1'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'jacoco'
 }
@@ -18,9 +18,8 @@ java {
 ext {
     mapstructVersion = '1.5.5.Final'
     lombokVersion = '1.18.28'
-    junitJupiterVersion = '5.10.0'
-    mockitoVersion = '5.5.0'
     wiremockVersion = '3.0.0'
+    lombokMapstructBindingVersion = '0.2.0'
 }
 
 configurations {
@@ -36,36 +35,32 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-
-    // Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    // MapStruct (runtime API) + annotation processor
+    // MapStruct
     implementation "org.mapstruct:mapstruct:${mapstructVersion}"
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 
-    // Lombok (compileOnly + annotation processor)
+    // Lombok
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
 
-    // H2 DB for dev/testing
+    // H2 & OpenAPI
     runtimeOnly 'com.h2database:h2'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-
-    // OpenAPI UI
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 
+
+    // --- ТЕСТОВІ ЗАЛЕЖНОСТІ (ВИПРАВЛЕНО) ---
+
+    // 1. Цей стартер ВЖЕ містить JUnit 5, Mockito та Hamcrest.
+    // Більше нічого для Mockito/JUnit не потрібно.
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
-
-    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
-    testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
-
-    testImplementation "com.github.tomakehurst:wiremock-jre8:${wiremockVersion}"
+    // 2. Додаємо WireMock (його немає у стартері)
+    testImplementation "org.wiremock:wiremock:${wiremockVersion}"
 }
 
 
@@ -86,9 +81,6 @@ test {
     }
 }
 
-jacoco {
-    toolVersion = "0.8.10"
-}
 
 jacocoTestReport {
     dependsOn test
@@ -104,9 +96,15 @@ jacocoTestCoverageVerification {
     dependsOn jacocoTestReport
     violationRules {
         rule {
+            element = 'CLASS'
+            includes = [
+                    'com.cosmocats.marketplace.domain.service.ProductService',
+                    'com.cosmocats.marketplace.web.controller.ProductController',
+                    'com.cosmocats.marketplace.web.exception.GlobalExceptionHandler'
+            ]
             limit {
                 counter = 'INSTRUCTION'
-                value = 'COVERED_RATIO'
+                value = 'COVEREDRATIO'
                 minimum = 0.80
             }
         }

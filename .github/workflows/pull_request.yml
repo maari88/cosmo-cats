@@ -12,42 +12,48 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Set up JDK 17 (you can change to another version if needed)
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      # Cache Gradle dependencies
       - name: Cache Gradle dependencies
         uses: actions/cache@v3
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: gradle-${{ hashFiles('**/*.gradle*', '**/gradle.properties', '**/gradle-wrapper.properties') }}
+          key: gradle-${{ hashFiles('marketplace/**/*.gradle*', 'marketplace/**/gradle.properties', 'marketplace/**/gradle-wrapper.properties') }}
           restore-keys: |
             gradle-
 
       - name: Grant execute permission for Gradlew
-        run: chmod +x ./gradlew
+        run: chmod +x ./marketplace/gradlew
 
-      # Run Gradle build and tests with coverage
+      - name: Setup Gradle (tooling)
+        uses: gradle/actions/setup-gradle@v3
+
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@v3
-        with:
-          cache-disabled: true
-          generate-job-summary: false
+        run: |
+          ./gradlew build
+        working-directory: marketplace
 
-      # Upload the JaCoCo test coverage report
+      - name: List build reports (debug)
+        run: ls -la marketplace/build/reports || true
+
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         with:
           name: test-coverage-report
-          path: build/reports/coverage/index.html
+          path: marketplace/build/reports/coverage/index.html
 
+      - name: Upload test execution report (if failed)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-execution-report
+          path: marketplace/build/reports/tests/test/

@@ -23,13 +23,11 @@ public class ProductService {
     // -------------------
     // CREATE
     // -------------------
-    public Product createProduct(Product product) {
+    public Product createProduct(ProductCreateDTO dto) {
+        Product product = productMapper.toEntity(dto);
+
         long id = idGenerator.getAndIncrement();
         product.setId(id);
-
-        if (product.getSku() == null || product.getSku().isBlank()) {
-            product.setSku("COSMO-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
-        }
 
         productStore.put(id, product);
         return product;

@@ -2,6 +2,7 @@ package com.cosmocats.marketplace.web.controller;
 
 import com.cosmocats.marketplace.domain.Product;
 import com.cosmocats.marketplace.domain.service.ProductService;
+import com.cosmocats.marketplace.web.dto.ProductCreateDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +23,8 @@ public class ProductController {
 
     // CREATE
     @PostMapping
-    public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) {
-        Product created = productService.createProduct(product);
+    public ResponseEntity<Product> createProduct(@Valid @RequestBody ProductCreateDTO dto) {
+        Product created = productService.createProduct(dto);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(created.getId()).toUri();
         return ResponseEntity.created(location).body(created);
@@ -45,8 +46,8 @@ public class ProductController {
     // UPDATE - full replace
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProductById(@PathVariable("id") Long id,
-                                                     @Valid @RequestBody Product product) {
-        Product updated = productService.updateProductById(id, product);
+                                                     @Valid @RequestBody ProductCreateDTO dto) {
+        Product updated = productService.updateProductById(id, dto);
         return ResponseEntity.ok(updated);
     }
 
