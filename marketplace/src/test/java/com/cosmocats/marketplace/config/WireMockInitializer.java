@@ -15,18 +15,21 @@ public class WireMockInitializer implements ApplicationContextInitializer<Config
     public void initialize(ConfigurableApplicationContext context) {
         if (!wireMockServer.isRunning()) {
             wireMockServer.start();
+
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 if (wireMockServer.isRunning()) {
                     wireMockServer.stop();
                 }
             }));
         }
-        String wiremockBaseUrl = wireMockServer.baseUrl();
 
-        System.setProperty("WIREMOCK_BASE_URL", wiremockBaseUrl);
+        String wiremockBaseUrl = wireMockServer.baseUrl();
+        String propertyName = "pricing.api.base-url";
+
+        System.setProperty(propertyName, wiremockBaseUrl);
 
         context.getEnvironment()
                 .getSystemProperties()
-                .putAll(Map.of("WIREMOCK_BASE_URL", wiremockBaseUrl));
+                .putAll(Map.of(propertyName, wiremockBaseUrl));
     }
 }
