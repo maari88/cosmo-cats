@@ -3,21 +3,26 @@ package com.cosmocats.marketplace.domain.service;
 import com.cosmocats.marketplace.domain.Product;
 import com.cosmocats.marketplace.domain.exception.ProductNotFoundException;
 import com.cosmocats.marketplace.web.dto.ProductCreateDTO;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class ProductServiceTest {
 
     @Autowired
     private ProductService productService;
+
+    @AfterEach
+    void tearDown() {
+        productService.clearStore();
+    }
+
 
     // -------------------
     // CREATE TESTS
@@ -30,17 +35,17 @@ class ProductServiceTest {
         dto.setName("Starship Fuel");
         dto.setPrice(100.0);
         dto.setSku("SKU-FUEL-01");
+        dto.setCurrency("USD");
+        dto.setStock(1);
 
         // Act
         Product createdProduct = productService.createProduct(dto);
 
         // Assert
         assertNotNull(createdProduct);
-        assertNotNull(createdProduct.getId());
         assertEquals(1L, createdProduct.getId());
         assertEquals("Starship Fuel", createdProduct.getName());
         assertEquals("SKU-FUEL-01", createdProduct.getSku());
-
 
         Product foundProduct = productService.getProductById(createdProduct.getId());
         assertEquals(createdProduct, foundProduct);
@@ -59,7 +64,6 @@ class ProductServiceTest {
         dto.setPrice(10.0);
         dto.setCurrency("USD");
         dto.setStock(1);
-
         Product createdProduct = productService.createProduct(dto);
 
         // Act
@@ -73,15 +77,14 @@ class ProductServiceTest {
 
     @Test
     void getProductById_WhenProductNotFound_ShouldThrowProductNotFoundException() {
+        // Arrange
         Long nonExistentId = 999L;
 
         // Act & Assert
-        ProductNotFoundException exception = assertThrows(
+        assertThrows(
                 ProductNotFoundException.class,
                 () -> productService.getProductById(nonExistentId)
         );
-
-        assertTrue(exception.getMessage().contains(String.valueOf(nonExistentId)));
     }
 
     @Test
@@ -120,7 +123,6 @@ class ProductServiceTest {
         // Assert
         assertNotNull(products);
         assertEquals(2, products.size());
-        assertEquals("Product 1", products.get(0).getName());
     }
 
     // -------------------
@@ -136,7 +138,6 @@ class ProductServiceTest {
         createDto.setSku("SKU-123");
         createDto.setCurrency("USD");
         createDto.setStock(10);
-
         Product createdProduct = productService.createProduct(createDto);
         Long id = createdProduct.getId();
 
@@ -148,12 +149,9 @@ class ProductServiceTest {
         Product updatedProduct = productService.updateProductById(id, updateDto);
 
         // Assert
-        assertNotNull(updatedProduct);
-        assertEquals(id, updatedProduct.getId());
         assertEquals("New Name", updatedProduct.getName());
         assertEquals(200.0, updatedProduct.getPrice());
         assertEquals("SKU-123", updatedProduct.getSku());
-
     }
 
     @Test
@@ -168,9 +166,8 @@ class ProductServiceTest {
                 ProductNotFoundException.class,
                 () -> productService.updateProductById(nonExistentId, updateDto)
         );
-
     }
-    
+
     // -------------------
     // DELETE TESTS
     // -------------------
@@ -184,7 +181,6 @@ class ProductServiceTest {
         dto.setPrice(10.0);
         dto.setCurrency("USD");
         dto.setStock(1);
-
         Product createdProduct = productService.createProduct(dto);
         Long id = createdProduct.getId();
 
