@@ -1,22 +1,22 @@
 package com.cosmocats.marketplace.external;
 
 import com.cosmocats.marketplace.external.dto.ExternalPriceDTO;
-
+import com.cosmocats.marketplace.config.WireMockInitializer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.math.BigDecimal;
 import java.util.Optional;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
-
 @SpringBootTest
+@ContextConfiguration(initializers = WireMockInitializer.class)
 public class PricingClientWiremockTest {
 
     @Autowired
