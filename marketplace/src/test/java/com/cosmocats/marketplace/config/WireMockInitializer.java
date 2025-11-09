@@ -1,6 +1,7 @@
 package com.cosmocats.marketplace.config;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -13,8 +14,10 @@ public class WireMockInitializer implements ApplicationContextInitializer<Config
 
     @Override
     public void initialize(ConfigurableApplicationContext context) {
+
         if (!wireMockServer.isRunning()) {
             wireMockServer.start();
+            WireMock.configureFor("localhost", wireMockServer.port());
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 if (wireMockServer.isRunning()) {
