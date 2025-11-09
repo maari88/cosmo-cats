@@ -4,18 +4,15 @@ import com.cosmocats.marketplace.domain.Product;
 import com.cosmocats.marketplace.domain.exception.ProductNotFoundException;
 import com.cosmocats.marketplace.domain.service.ProductService;
 import com.cosmocats.marketplace.web.dto.ProductCreateDTO;
-import com.cosmocats.marketplace.web.exception.GlobalExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import java.util.List;
 
@@ -27,34 +24,23 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class ProductControllerStandaloneTest {
-
+    @Autowired
     private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private ProductService productService;
 
-    @InjectMocks
-    private ProductController productController;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    // Helper DTO
     private ProductCreateDTO validDto;
     private Product productStub;
 
     @BeforeEach
     void setUp() {
-        LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
-        validator.afterPropertiesSet();
-
-        mockMvc = MockMvcBuilders
-                .standaloneSetup(productController)
-                .setControllerAdvice(new GlobalExceptionHandler())
-                .setValidator(validator)
-                .build();
-
         validDto = new ProductCreateDTO();
         validDto.setName("Galaxy-Class Starship");
         validDto.setSku("SKU-GXY-001");
