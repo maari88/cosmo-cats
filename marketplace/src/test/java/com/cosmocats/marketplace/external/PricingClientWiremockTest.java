@@ -17,7 +17,6 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 @SpringBootTest
-@ContextConfiguration(initializers = WireMockInitializer.class)
 public class PricingClientWiremockTest {
 
     @Autowired
