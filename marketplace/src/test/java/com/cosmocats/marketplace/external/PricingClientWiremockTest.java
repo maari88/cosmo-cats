@@ -17,11 +17,11 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 @SpringBootTest
+@ContextConfiguration(initializers = WireMockInitializer.class)
 public class PricingClientWiremockTest {
 
     @Autowired
     private PricingClient pricingClient;
-
     private final WireMockServer wireMockServer = WireMockInitializer.wireMockServer;
 
 
