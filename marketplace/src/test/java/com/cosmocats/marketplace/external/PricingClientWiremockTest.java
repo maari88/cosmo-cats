@@ -1,19 +1,9 @@
 package com.cosmocats.marketplace.external;
 
 import com.cosmocats.marketplace.external.dto.ExternalPriceDTO;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
-
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-// ⬇️ 1. ДОДАНО НОВИЙ ІМПОРТ
-import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -23,44 +13,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.util.Optional;
-
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
+
 @SpringBootTest
-@DisabledIfEnvironmentVariable(
-        named = "CI",
-        matches = "true",
-        disabledReason = "WireMock server fails to start in GitHub Actions"
-)
 public class PricingClientWiremockTest {
 
     @Autowired
     private PricingClient pricingClient;
-
-    static WireMockServer wireMockServer;
-
-    @BeforeAll
-    static void startWireMock() {
-        wireMockServer = new WireMockServer(options().dynamicPort());
-        wireMockServer.start();
-        configureFor("localhost", wireMockServer.port());
-    }
-
-    @AfterAll
-    static void stopWireMock() {
-        wireMockServer.stop();
-    }
-
     @BeforeEach
     void resetWireMock() {
-        wireMockServer.resetAll();
-    }
-
-
-    @DynamicPropertySource
-    static void wiremockProperties(DynamicPropertyRegistry registry) {
-        registry.add("pricing.api.base-url",
-                () -> "http://localhost:" + wireMockServer.port());
+        removeAllMappings();
     }
 
     @Test
