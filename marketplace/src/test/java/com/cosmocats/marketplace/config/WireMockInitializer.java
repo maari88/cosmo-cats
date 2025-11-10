@@ -9,6 +9,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import java.util.Map;
 
 public class WireMockInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+
     public static final WireMockServer wireMockServer =
             new WireMockServer(new WireMockConfiguration().dynamicPort());
 
@@ -17,6 +18,7 @@ public class WireMockInitializer implements ApplicationContextInitializer<Config
 
         if (!wireMockServer.isRunning()) {
             wireMockServer.start();
+
             WireMock.configureFor("localhost", wireMockServer.port());
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
