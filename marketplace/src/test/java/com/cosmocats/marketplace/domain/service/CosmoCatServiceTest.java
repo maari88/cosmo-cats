@@ -40,7 +40,7 @@ class CosmoCatServiceTest {
                 "Aspect should have intercepted this call and thrown an exception."
         );
 
-        String expectedMessage = "Function 'KITTY_PRODUCTS' disabled.";
+        String expectedMessage = "Function 'KITTY_PRODUCTS' disabled";
         assertEquals(expectedMessage, exception.getMessage());
     }
 }
