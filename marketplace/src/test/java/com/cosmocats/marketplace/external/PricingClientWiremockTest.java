@@ -22,6 +22,7 @@ public class PricingClientWiremockTest {
 
     @Autowired
     private PricingClient pricingClient;
+
     private final WireMockServer wireMockServer = WireMockInitializer.wireMockServer;
 
 
