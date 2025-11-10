@@ -9,12 +9,10 @@ public record FeatureToggles(
         KittyProducts kittyProducts
 ) {
 
-    /** Вкладений 'record' для 'feature.cosmoCats' */
     public record CosmoCats(
             boolean enabled
     ) {}
 
-    /** Вкладений 'record' для 'feature.kittyProducts' */
     public record KittyProducts(
             boolean enabled
     ) {}
