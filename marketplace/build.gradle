@@ -18,7 +18,7 @@ java {
 ext {
     mapstructVersion = '1.5.5.Final'
     lombokVersion = '1.18.28'
-    wiremockVersion = '3.0.0'
+    wiremockVersion = '2.35.1'
     lombokMapstructBindingVersion = '0.2.0'
 }
 
@@ -55,7 +55,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    testImplementation "org.wiremock:wiremock:${wiremockVersion}"
+    testImplementation "com.github.tomakehurst:wiremock-jre8:${wiremockVersion}"
 }
 
 
