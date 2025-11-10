@@ -57,7 +57,6 @@ public class ProductService {
         if (existing == null) {
             throw new ProductNotFoundException(productId);
         }
-        // використати MapStruct для копіювання не-null полів
         productMapper.updateFromDto(dto, existing);
         productStore.put(productId, existing);
         return existing;
