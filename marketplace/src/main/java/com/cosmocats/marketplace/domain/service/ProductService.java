@@ -70,5 +70,10 @@ public class ProductService {
         productStore.remove(productId);
     }
 
+    public void clearStore() {
+        productStore.clear();
+        idGenerator.set(1);
+    }
+
 }
 

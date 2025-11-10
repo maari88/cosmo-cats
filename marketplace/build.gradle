@@ -18,7 +18,7 @@ java {
 ext {
     mapstructVersion = '1.5.5.Final'
     lombokVersion = '1.18.28'
-    wiremockVersion = '3.0.0'
+    wiremockVersion = '2.35.1'
     lombokMapstructBindingVersion = '0.2.0'
 }
 
@@ -52,15 +52,10 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 
 
-    // --- ТЕСТОВІ ЗАЛЕЖНОСТІ (ВИПРАВЛЕНО) ---
-
-    // 1. Цей стартер ВЖЕ містить JUnit 5, Mockito та Hamcrest.
-    // Більше нічого для Mockito/JUnit не потрібно.
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    // 2. Додаємо WireMock (його немає у стартері)
-    testImplementation "org.wiremock:wiremock:${wiremockVersion}"
+    testImplementation "com.github.tomakehurst:wiremock-jre8:${wiremockVersion}"
 }
 
 
