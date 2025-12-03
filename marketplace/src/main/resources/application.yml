@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: marketplace
+  datasource:
+    url: jdbc:h2:mem:cosmocatsdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: ""
+  h2:
+    console:
+      enabled: true
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+
+pricing:
+  api:
+    base-url: http://localhost:8080
+
+feature:
+  cosmoCats:
+    enabled: true
+  kittyProducts:
+    enabled: false

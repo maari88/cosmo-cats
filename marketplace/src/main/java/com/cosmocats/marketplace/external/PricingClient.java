@@ -25,10 +25,6 @@ public class PricingClient {
                 .build();
     }
 
-    /**
-     * Отримує ціну для SKU з зовнішнього API.
-     * Повертає Optional.empty(), якщо ціна не знайдена (404).
-     */
     public Optional<ExternalPriceDTO> getExternalPriceForSku(String sku) {
         log.info("Requesting external price for SKU: {}", sku);
         try {
