@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changes/01-create-initial-schema.yaml
+  - include:
+      file: db/changelog/changes/02-add-constraints-and-indexes.yaml
+  - include:
+      file: db/changelog/changes/03-add-natural-id-to-orders.yaml
