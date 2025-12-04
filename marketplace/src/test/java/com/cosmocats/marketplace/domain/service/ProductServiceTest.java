@@ -18,11 +18,6 @@ class ProductServiceTest {
     @Autowired
     private ProductService productService;
 
-    @AfterEach
-    void tearDown() {
-        productService.clearStore();
-    }
-
 
     // -------------------
     // CREATE TESTS
