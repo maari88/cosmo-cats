@@ -2,6 +2,7 @@ package com.cosmocats.marketplace.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.NaturalId;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -18,7 +19,11 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String customerId; // у реальному проєкті — окрема сутність User
+    @NaturalId
+    @Column(nullable = false, unique = true)
+    private String orderNumber;
+
+    private String customerId;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "order_id")
