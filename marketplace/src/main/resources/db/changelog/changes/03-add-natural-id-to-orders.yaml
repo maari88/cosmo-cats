@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: 03-add-order-number-natural-id
+      author: cosmo-cat-admin
+      changes:
+        - addColumn:
+            tableName: orders
+            columns:
+              - column:
+                  name: order_number
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+        - createIndex:
+            indexName: idx_order_number
+            tableName: orders
+            columns:
+              - column:
+                  name: order_number
