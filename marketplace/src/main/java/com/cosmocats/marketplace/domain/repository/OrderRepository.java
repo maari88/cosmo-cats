@@ -1,6 +1,6 @@
 package com.cosmocats.marketplace.domain.repository;
 
-import com.cosmocats.marketplace.domain.Order;
+import com.cosmocats.marketplace.domain.entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
