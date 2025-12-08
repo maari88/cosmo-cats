@@ -1,6 +1,6 @@
 package com.cosmocats.marketplace.domain.repository;
 
-import com.cosmocats.marketplace.domain.Product;
+import com.cosmocats.marketplace.domain.entity.Product;
 import com.cosmocats.marketplace.domain.repository.projection.TopProductProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
