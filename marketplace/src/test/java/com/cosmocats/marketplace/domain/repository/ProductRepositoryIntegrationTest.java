@@ -47,16 +47,16 @@ class ProductRepositoryIntegrationTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("Should save and retrieve product by ID")
     void saveAndFindById() {
-        // Create
         Product product = new Product();
         product.setName("Mars Bar");
         product.setSku("MARS-001");
         product.setPrice(5.50);
         product.setCategory(testCategory);
+        product.setCurrency("USD");
+        product.setStock(10);
 
         Product savedProduct = productRepository.save(product);
 
-        // Read
         Optional<Product> foundProduct = productRepository.findById(savedProduct.getId());
 
         assertThat(foundProduct).isPresent();
@@ -71,6 +71,9 @@ class ProductRepositoryIntegrationTest extends AbstractIntegrationTest {
         product.setSku("VENUS-001");
         product.setPrice(12.0);
         product.setCategory(testCategory);
+        product.setCurrency("USD");
+        product.setStock(5);
+
         productRepository.save(product);
 
         Optional<Product> result = productRepository.findBySku("VENUS-001");
@@ -87,6 +90,9 @@ class ProductRepositoryIntegrationTest extends AbstractIntegrationTest {
         product.setSku("MOON-001");
         product.setPrice(10.0);
         product.setCategory(testCategory);
+        product.setCurrency("USD");
+        product.setStock(20);
+
         Product saved = productRepository.save(product);
 
         saved.setPrice(20.0);
@@ -104,6 +110,9 @@ class ProductRepositoryIntegrationTest extends AbstractIntegrationTest {
         product.setSku("COMET-001");
         product.setPrice(1.0);
         product.setCategory(testCategory);
+        product.setCurrency("USD");
+        product.setStock(100);
+
         Product saved = productRepository.save(product);
 
         productRepository.deleteById(saved.getId());
@@ -111,8 +120,6 @@ class ProductRepositoryIntegrationTest extends AbstractIntegrationTest {
         Optional<Product> retrieved = productRepository.findById(saved.getId());
         assertThat(retrieved).isEmpty();
     }
-
-    // --- TEST CUSTOM QUERY & PROJECTION ---
 
     @Test
     @DisplayName("Should return top selling products via projection")
@@ -122,6 +129,8 @@ class ProductRepositoryIntegrationTest extends AbstractIntegrationTest {
         p1.setSku("H2O");
         p1.setPrice(1.0);
         p1.setCategory(testCategory);
+        p1.setCurrency("USD");
+        p1.setStock(100);
         productRepository.save(p1);
 
         Product p2 = new Product();
@@ -129,15 +138,15 @@ class ProductRepositoryIntegrationTest extends AbstractIntegrationTest {
         p2.setSku("O2");
         p2.setPrice(0.0);
         p2.setCategory(testCategory);
+        p2.setCurrency("USD");
+        p2.setStock(100);
         productRepository.save(p2);
 
         Order order = new Order();
         order.setCustomerId("user1");
         order.setOrderNumber("ORD-111");
-
         order.setTotalAmount(100.0);
         order.setCurrency("USD");
-
         orderRepository.save(order);
 
         OrderItem item1 = new OrderItem();
@@ -145,6 +154,7 @@ class ProductRepositoryIntegrationTest extends AbstractIntegrationTest {
         item1.setProduct(p1);
         item1.setQuantity(5);
         item1.setPricePerUnit(1.0);
+        item1.setLineTotal(5.0);
         orderItemRepository.save(item1);
 
         OrderItem item2 = new OrderItem();
@@ -152,6 +162,7 @@ class ProductRepositoryIntegrationTest extends AbstractIntegrationTest {
         item2.setProduct(p2);
         item2.setQuantity(2);
         item2.setPricePerUnit(0.0);
+        item2.setLineTotal(0.0);
         orderItemRepository.save(item2);
 
         // Act
