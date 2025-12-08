@@ -1,6 +1,6 @@
 package com.cosmocats.marketplace.web.mapper;
 
-import com.cosmocats.marketplace.domain.Product;
+import com.cosmocats.marketplace.domain.entity.Product;
 import com.cosmocats.marketplace.web.dto.ProductDTO;
 import com.cosmocats.marketplace.web.dto.ProductCreateDTO;
 import org.mapstruct.*;
