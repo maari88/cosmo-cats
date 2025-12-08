@@ -1,6 +1,6 @@
 package com.cosmocats.marketplace.domain.service;
 
-import com.cosmocats.marketplace.domain.Product;
+import com.cosmocats.marketplace.domain.entity.Product;
 import com.cosmocats.marketplace.domain.exception.ProductNotFoundException;
 import com.cosmocats.marketplace.domain.repository.ProductRepository;
 import com.cosmocats.marketplace.domain.repository.projection.TopProductProjection;
