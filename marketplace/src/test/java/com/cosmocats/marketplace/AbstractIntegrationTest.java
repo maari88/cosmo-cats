@@ -17,7 +17,6 @@ public abstract class AbstractIntegrationTest {
                 .withDatabaseName("cosmocats")
                 .withUsername("test")
                 .withPassword("test");
-
         postgres.start();
     }
 
@@ -29,8 +28,12 @@ public abstract class AbstractIntegrationTest {
 
         registry.add("spring.datasource.driverClassName", () -> "org.postgresql.Driver");
         registry.add("spring.datasource.driver-class-name", () -> "org.postgresql.Driver");
+
         registry.add("spring.jpa.database", () -> "POSTGRESQL");
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "update");
         registry.add("spring.jpa.properties.hibernate.dialect", () -> "org.hibernate.dialect.PostgreSQLDialect");
+
+        registry.add("spring.liquibase.enabled", () -> "false");
+
+        registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
     }
 }
