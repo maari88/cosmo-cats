@@ -1,10 +1,10 @@
 package com.cosmocats.marketplace.domain.repository;
 
 import com.cosmocats.marketplace.AbstractIntegrationTest;
-import com.cosmocats.marketplace.domain.Category;
-import com.cosmocats.marketplace.domain.Order;
-import com.cosmocats.marketplace.domain.OrderItem;
-import com.cosmocats.marketplace.domain.Product;
+import com.cosmocats.marketplace.domain.entity.Category;
+import com.cosmocats.marketplace.domain.entity.Order;
+import com.cosmocats.marketplace.domain.entity.OrderItem;
+import com.cosmocats.marketplace.domain.entity.Product;
 import com.cosmocats.marketplace.domain.repository.projection.TopProductProjection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
