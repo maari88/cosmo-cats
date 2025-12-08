@@ -133,7 +133,11 @@ class ProductRepositoryIntegrationTest extends AbstractIntegrationTest {
 
         Order order = new Order();
         order.setCustomerId("user1");
-        order.setOrderNumber("ORD-111"); // Natural ID
+        order.setOrderNumber("ORD-111");
+
+        order.setTotalAmount(100.0);
+        order.setCurrency("USD");
+
         orderRepository.save(order);
 
         OrderItem item1 = new OrderItem();
