@@ -28,7 +28,7 @@ public abstract class AbstractIntegrationTest {
 
         registry.add("spring.jpa.database", () -> "POSTGRESQL");
 
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "update");
+        registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
 
         registry.add("spring.jpa.properties.hibernate.dialect", () -> "org.hibernate.dialect.PostgreSQLDialect");
     }
