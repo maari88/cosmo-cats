@@ -63,7 +63,7 @@ class ProductControllerStandaloneTest {
 
     @Test
     @DisplayName("Should create product when authorized as ADMIN")
-    @WithMockUser(username = "cosmo-admin", roles = {"ADMIN"}) 
+    @WithMockUser(username = "cosmo-admin", roles = {"ADMIN"})
     void createProduct_WhenValid_ShouldReturn201Created() throws Exception {
         when(productService.createProduct(any(ProductCreateDTO.class))).thenReturn(productStub);
 
