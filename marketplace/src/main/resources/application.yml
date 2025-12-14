@@ -23,6 +23,12 @@ spring:
     enabled: true
     drop-first: true
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8090/.well-known/jwks.json
+
 pricing:
   api:
     base-url: http://localhost:8080
@@ -32,3 +38,7 @@ feature:
     enabled: true
   kittyProducts:
     enabled: false
+
+app:
+  security:
+    api-key: "COSMO-SUPER-SECRET-KEY-2025"

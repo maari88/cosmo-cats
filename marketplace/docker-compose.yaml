@@ -1,0 +1,8 @@
+services:
+  wiremock:
+    image: wiremock/wiremock:3.3.1
+    container_name: cosmo-wiremock
+    ports:
+      - "8090:8080"
+    volumes:
+      - ./docker/wiremock:/home/wiremock
