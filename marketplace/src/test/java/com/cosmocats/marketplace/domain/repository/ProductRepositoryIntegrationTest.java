@@ -11,7 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -165,8 +164,10 @@ class ProductRepositoryIntegrationTest extends AbstractIntegrationTest {
         item2.setLineTotal(0.0);
         orderItemRepository.save(item2);
 
+        // Act
         List<TopProductProjection> topProducts = productRepository.findTopSellingProducts();
 
+        // Assert
         assertThat(topProducts).hasSize(2);
         assertThat(topProducts.get(0).getName()).isEqualTo("Water");
         assertThat(topProducts.get(0).getTotalSold()).isEqualTo(5L);
