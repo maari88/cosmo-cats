@@ -1,0 +1,257 @@
+databaseChangeLog:
+  - changeSet:
+      id: 01-create-sequences
+      author: cosmo-cat-admin
+      changes:
+        - createSequence:
+            sequenceName: categories_seq
+            startValue: 1
+            incrementBy: 1
+        - createSequence:
+            sequenceName: products_seq
+            startValue: 1
+            incrementBy: 1
+        - createSequence:
+            sequenceName: orders_seq
+            startValue: 1
+            incrementBy: 1
+        - createSequence:
+            sequenceName: order_items_seq
+            startValue: 1
+            incrementBy: 1
+        - createSequence:
+            sequenceName: carts_seq
+            startValue: 1
+            incrementBy: 1
+        - createSequence:
+            sequenceName: cart_items_seq
+            startValue: 1
+            incrementBy: 1
+
+  - changeSet:
+      id: 01-create-tables
+      author: cosmo-cat-admin
+      changes:
+        # --- CATEGORIES ---
+        - createTable:
+            tableName: categories
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  defaultValueSequenceNext: categories_seq
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: code
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(1000)
+
+        # --- PRODUCTS ---
+        - createTable:
+            tableName: products
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  defaultValueSequenceNext: products_seq
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: sku
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: name
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(2000)
+              - column:
+                  name: price
+                  type: double
+                  constraints:
+                    nullable: false
+              - column:
+                  name: currency
+                  type: varchar(3)
+              - column:
+                  name: stock
+                  type: int
+              - column:
+                  name: category_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_product_category
+                    references: categories(id)
+              - column:
+                  name: origin_planet
+                  type: varchar(255)
+              - column:
+                  name: weight_kg
+                  type: double
+              - column:
+                  name: antigravity_coefficient
+                  type: double
+              - column:
+                  name: radiation_rating
+                  type: int
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: updated_at
+                  type: timestamp
+
+        # --- PRODUCT TAGS ---
+        - createTable:
+            tableName: product_tags
+            columns:
+              - column:
+                  name: product_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_tags_product
+                    references: products(id)
+              - column:
+                  name: tag
+                  type: varchar(255)
+
+        # --- ORDERS ---
+        - createTable:
+            tableName: orders
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  defaultValueSequenceNext: orders_seq
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: order_number
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: updated_at
+                  type: timestamp
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: total_amount
+                  type: double
+              - column:
+                  name: currency
+                  type: varchar(3)
+              - column:
+                  name: customer_id
+                  type: varchar(255)
+
+        # --- ORDER ITEMS ---
+        - createTable:
+            tableName: order_items
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  defaultValueSequenceNext: order_items_seq
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: order_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_item_order
+                    references: orders(id)
+              - column:
+                  name: product_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_item_product
+                    references: products(id)
+              - column:
+                  name: product_name
+                  type: varchar(255)
+              - column:
+                  name: quantity
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price_per_unit
+                  type: double
+              - column:
+                  name: line_total
+                  type: double
+
+        # --- CARTS ---
+        - createTable:
+            tableName: carts
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  defaultValueSequenceNext: carts_seq
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: owner_id
+                  type: varchar(255)
+              - column:
+                  name: updated_at
+                  type: timestamp
+
+        # --- CART ITEMS ---
+        - createTable:
+            tableName: cart_items
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  defaultValueSequenceNext: cart_items_seq
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: cart_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_cartitem_cart
+                    references: carts(id)
+              - column:
+                  name: product_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_cartitem_product
+                    references: products(id)
+              - column:
+                  name: quantity
+                  type: int
+                  constraints:
+                    nullable: false

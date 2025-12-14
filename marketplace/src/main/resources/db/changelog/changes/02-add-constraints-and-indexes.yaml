@@ -1,0 +1,51 @@
+databaseChangeLog:
+  - changeSet:
+      id: 02-create-users-table
+      author: cosmo-cat-admin
+      changes:
+        - createSequence:
+            sequenceName: users_seq
+            startValue: 1
+            incrementBy: 1
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  defaultValueSequenceNext: users_seq
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(50)
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            columnNames: email
+            constraintName: uq_user_email
+            tableName: users
+
+  - changeSet:
+      id: 02-add-unique-product-in-category
+      author: cosmo-cat-admin
+      changes:
+        - addUniqueConstraint:
+            columnNames: name, category_id
+            constraintName: uq_product_name_in_category
+            tableName: products
+
+  - changeSet:
+      id: 02-add-product-name-index
+      author: cosmo-cat-admin
+      changes:
+        - createIndex:
+            indexName: idx_product_name
+            tableName: products
+            columns:
+              - column:
+                  name: name

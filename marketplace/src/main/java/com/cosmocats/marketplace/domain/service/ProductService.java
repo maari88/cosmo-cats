@@ -1,78 +1,70 @@
 package com.cosmocats.marketplace.domain.service;
 
-import com.cosmocats.marketplace.domain.Product;
+import com.cosmocats.marketplace.domain.entity.Product;
 import com.cosmocats.marketplace.domain.exception.ProductNotFoundException;
+import com.cosmocats.marketplace.domain.repository.ProductRepository;
+import com.cosmocats.marketplace.domain.repository.projection.TopProductProjection;
 import com.cosmocats.marketplace.web.dto.ProductCreateDTO;
 import com.cosmocats.marketplace.web.mapper.ProductMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class ProductService {
 
-    private final Map<Long, Product> productStore = new HashMap<>();
-    private final AtomicLong idGenerator = new AtomicLong(1);
+    private final ProductRepository productRepository;
     private final ProductMapper productMapper;
 
-    public ProductService(ProductMapper productMapper) {
+    public ProductService(ProductRepository productRepository, ProductMapper productMapper) {
+        this.productRepository = productRepository;
         this.productMapper = productMapper;
     }
 
     // -------------------
     // CREATE
     // -------------------
+    @Transactional
     public Product createProduct(ProductCreateDTO dto) {
         Product product = productMapper.toEntity(dto);
-
-        long id = idGenerator.getAndIncrement();
-        product.setId(id);
-
-        productStore.put(id, product);
-        return product;
+        return productRepository.save(product);
     }
 
     // -------------------
     // READ
     // -------------------
     public List<Product> getAllProducts() {
-        return new ArrayList<>(productStore.values());
+        return productRepository.findAll();
     }
 
-    // READ - single
     public Product getProductById(Long productId) {
-        Product product = productStore.get(productId);
-        if (product == null) {
-            throw new ProductNotFoundException(productId);
-        }
-        return product;
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(productId));
+    }
+
+    public List<TopProductProjection> getTopSellingProducts() {
+        return productRepository.findTopSellingProducts();
     }
 
     // -------------------
     // UPDATE
     // -------------------
+    @Transactional
     public Product updateProductById(Long productId, ProductCreateDTO dto) {
-        Product existing = productStore.get(productId);
-        if (existing == null) {
-            throw new ProductNotFoundException(productId);
-        }
+        Product existing = getProductById(productId);
         productMapper.updateFromDto(dto, existing);
-        productStore.put(productId, existing);
         return existing;
     }
 
     // -------------------
     // DELETE
     // -------------------
+    @Transactional
     public void deleteProductById(Long productId) {
-        productStore.remove(productId);
+        if (productRepository.existsById(productId)) {
+            productRepository.deleteById(productId);
+        }
     }
-
-    public void clearStore() {
-        productStore.clear();
-        idGenerator.set(1);
-    }
-
 }
-

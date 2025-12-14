@@ -1,6 +1,6 @@
 package com.cosmocats.marketplace.web.controller;
 
-import com.cosmocats.marketplace.domain.Product;
+import com.cosmocats.marketplace.domain.entity.Product;
 import com.cosmocats.marketplace.domain.exception.ProductNotFoundException;
 import com.cosmocats.marketplace.domain.service.ProductService;
 import com.cosmocats.marketplace.web.dto.ProductCreateDTO;

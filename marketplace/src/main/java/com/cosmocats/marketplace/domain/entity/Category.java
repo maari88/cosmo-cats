@@ -1,4 +1,4 @@
-package com.cosmocats.marketplace.domain;
+package com.cosmocats.marketplace.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

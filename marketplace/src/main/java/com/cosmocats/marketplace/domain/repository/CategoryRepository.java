@@ -1,6 +1,6 @@
 package com.cosmocats.marketplace.domain.repository;
 
-import com.cosmocats.marketplace.domain.Category;
+import com.cosmocats.marketplace.domain.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
