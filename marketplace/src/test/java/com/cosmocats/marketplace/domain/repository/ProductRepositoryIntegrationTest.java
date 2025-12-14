@@ -165,10 +165,8 @@ class ProductRepositoryIntegrationTest extends AbstractIntegrationTest {
         item2.setLineTotal(0.0);
         orderItemRepository.save(item2);
 
-        // Act
         List<TopProductProjection> topProducts = productRepository.findTopSellingProducts();
 
-        // Assert
         assertThat(topProducts).hasSize(2);
         assertThat(topProducts.get(0).getName()).isEqualTo("Water");
         assertThat(topProducts.get(0).getTotalSold()).isEqualTo(5L);
